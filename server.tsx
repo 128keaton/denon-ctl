@@ -95,7 +95,7 @@ Bun.serve({
 
 		// --- STATIC SERVING ---
         if (url.pathname === "/") return new Response(Bun.file("./index.html"));
-				if (url.pathname === "/main.css") return new Response(Bun.file("./dist/main.css"));
+				if (url.pathname === "/output.css") return new Response(Bun.file("./dist/output.css"));
 		if (url.pathname === "/src/main.tsx")
 			return new Response(Bun.file("./dist/main.js"));
 

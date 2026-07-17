@@ -36,288 +36,149 @@ function App() {
 	}, [fetchStatus]);
 
 	return (
-		<div className="w-full h-full"
+    <div className="min-h-screen bg-base-300 flex items-center justify-center p-4">
+      {/* Main Remote Card */}
+      <div className="card w-full max-w-sm bg-base-100 shadow-2xl border border-neutral/20 overflow-hidden">
 
-		>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-				}}
-			>
-				<h2 style={{ margin: 0 }}>📻 AVR Dashboard</h2>
+        {/* Header Block */}
+        <div className="p-6 pb-4 bg-neutral text-neutral-content flex justify-between items-center shadow-md">
+          <div>
+            <h1 className="text-xl font-black tracking-tight text-white">AVR REMOTE</h1>
+            <p className="text-xs opacity-70">Main Zone Control</p>
+          </div>
 
-				{/* Live Power Indicator Status Badge */}
-				<span
-					style={{
-						padding: "6px 12px",
-						borderRadius: 20,
-						fontSize: 12,
-						fontWeight: "bold",
-						background: data?.isPoweredOn ? "#22c55e" : "#ef4444",
-						color: "#fff",
-					}}
-				>
-					{data?.isPoweredOn ? "● POWERED ON" : "○ STANDBY"}
-				</span>
-			</div>
-			<hr style={{ borderColor: "#444", margin: "20px 0" }} />
+          {/* Reactive Power Status Indicator Badge */}
+          <div className={`badge ${data?.isPoweredOn ? 'badge-success' : 'badge-error'} badge-sm font-bold gap-1 px-3 py-2`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            {data?.isPoweredOn ? 'ON' : 'STANDBY'}
+          </div>
+        </div>
 
-			{/* Power Control Command Elements */}
-			<div style={{ display: "flex", gap: 10, marginBottom: 25 }}>
-				<button
-					type="button"
-					onClick={() => sendCommand("turnOn")}
-					disabled={data?.isPoweredOn} // Disables the button if the device is already ON
-					style={{
-						flex: 1,
-						padding: 12,
-						background: data?.isPoweredOn ? "#444" : "#10b981", // Turn grey when disabled
-						color: data?.isPoweredOn ? "#aaa" : "#fff",
-						fontWeight: "bold",
-						borderRadius: 6,
-						border: "none",
-						cursor: data?.isPoweredOn ? "not-allowed" : "pointer",
-					}}
-				>
-					POWER ON
-				</button>
+        {/* Content Container Body */}
+        <div className="card-body p-6 gap-6">
 
-				<button
-					type="button"
-					onClick={() => sendCommand("turnOff")}
-					disabled={!data?.isPoweredOn} // Disables the button if the device is already in STANDBY
-					style={{
-						flex: 1,
-						padding: 12,
-						background: !data?.isPoweredOn ? "#444" : "#dc2626", // Turn grey when disabled
-						color: !data?.isPoweredOn ? "#aaa" : "#fff",
-						fontWeight: "bold",
-						borderRadius: 6,
-						border: "none",
-						cursor: !data?.isPoweredOn ? "not-allowed" : "pointer",
-					}}
-				>
-					STANDBY
-				</button>
-			</div>
+          {/* 1. POWER INTERACTION GRID */}
+          <div className="grid grid-cols-2 gap-3">
+                        <button
+                              type="button"
+              onClick={() => sendCommand('turnOn')}
+              disabled={data?.isPoweredOn}
+              className="btn btn-success btn-md font-black shadow-sm"
+            >
+            POWER ON
+            </button>
 
-			<div style={{ marginBottom: 25 }}>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "center",
-						marginBottom: 8,
-					}}
-				>
-					<span style={{ fontSize: 14, color: "#aaa" }}>
-						🎛️ Volume Master Control
-					</span>
-					{/* Format display level from 3 digits back down to readable decimal metric */}
-					<span style={{ fontWeight: "bold", color: "#10b981" }}>
-						{Number(data?.audio.volume) > 100
-							? Number(data?.audio.volume) / 10
-							: data?.audio.volume}{" "}
-						dB
-					</span>
-				</div>
+                        <button
+                          type="button"
+              onClick={() => sendCommand('turnOff')}
+              disabled={!data?.isPoweredOn}
+              className="btn btn-error btn-md font-black shadow-sm"
+            >
+             STANDBY
+            </button>
+          </div>
 
-				{/* Slider Range Interface */}
-				<input
-					type="range"
-					min="0"
-					max="80"
-					// Read state safely, scaling down 3-digit values if necessary
-					defaultValue={
-						Number(data?.audio.volume) > 100
-							? Math.floor(Number(data?.audio.volume) / 10)
-							: Number(data?.audio.volume || 0)
-					}
-					// Use key forces React to reset the handle position when background polling receives updates
-					key={Number(data?.audio.volume)}
-					// Fires instantly upon mouse release on Desktop systems
-					onMouseUp={(e: React.MouseEvent<HTMLInputElement>) =>
-						sendCommand("setVolume", (e.target as HTMLInputElement).value)
-					}
-					// Fires instantly upon finger lift on mobile touch screens
-					onTouchEnd={(e: React.TouchEvent<HTMLInputElement>) =>
-						sendCommand("setVolume", (e.target as HTMLInputElement).value)
-					}
-					style={{
-						width: "100%",
-						accentColor: "#10b981",
-						cursor: "pointer",
-						marginBottom: 12,
-					}}
-				/>
+          {/* 2. DYNAMIC INPUT SELECTOR ROUTER */}
+          <div className="form-control w-full">
+            <label htmlFor="source" className="label py-1">
+              <span className="label-text font-bold text-neutral-content text-xs tracking-wider uppercase">Active Input Channel</span>
+            </label>
+                        <select
+                            id="source"
+              value={data?.currentSource.index}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => sendCommand('setSource', e.target.value)}
+              className="select select-bordered select-primary w-full font-semibold"
+            >
+              {data?.availableInputs.map((input) => (
+                <option key={input.index} value={input.index}>
+                  {input.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-				{/* Precision Step Micro-Adjustment Buttons */}
-				<div style={{ display: "flex", gap: 10 }}>
-					<button
-						type="button"
-						onClick={() => {
-							const currentVol =
-								Number(data?.audio.volume) > 100
-									? Math.floor(Number(data?.audio.volume) / 10)
-									: Number(data?.audio.volume);
-							sendCommand("setVolume", currentVol - 1);
-						}}
-						style={{
-							flex: 1,
-							padding: "8px",
-							background: "#333",
-							border: "1px solid #444",
-							color: "#fff",
-							borderRadius: 6,
-							cursor: "pointer",
-							fontSize: 13,
-						}}
-					>
-						🔉 VOL DOWN (-1)
-					</button>
-					<button
-						type="button"
-						onClick={() => {
-							const currentVol =
-								Number(data?.audio.volume) > 100
-									? Math.floor(Number(data?.audio.volume) / 10)
-									: Number(data?.audio.volume);
-							sendCommand("setVolume", currentVol + 1);
-						}}
-						style={{
-							flex: 1,
-							padding: "8px",
-							background: "#333",
-							border: "1px solid #444",
-							color: "#fff",
-							borderRadius: 6,
-							cursor: "pointer",
-							fontSize: 13,
-						}}
-					>
-						🔊 VOL UP (+1)
-					</button>
-				</div>
-			</div>
+          {/* 3. SOUND REVOLUTION DSP SELECTOR */}
+          <div className="form-control w-full">
+            <label htmlFor="soundMode" className="label py-1">
+              <span className="label-text font-bold text-neutral-content text-xs tracking-wider uppercase">DSP Sound Mode</span>
+            </label>
+                        <select
+                            id="soundMode"
+              value={data?.sound.currentIndex}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => sendCommand('setSoundMode', e.target.value)}
+              className="select select-bordered select-secondary w-full font-semibold"
+            >
+              {data?.sound.availableModes.map((mode) => (
+                <option key={mode.index} value={mode.index}>
+                  {mode.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-			{/* Dynamic Selector for Changing Input Sources */}
-			<div style={{ marginBottom: 25 }}>
-				<span
-					style={{
-						display: "block",
-						marginBottom: 8,
-						fontSize: 14,
-						color: "#aaa",
-					}}
-				>
-					🔌 Switch Input Channel
-				</span>
-				<select
-					value={data?.currentSource?.index ?? ""}
-					onChange={(e) => sendCommand("setSource", e.target.value)}
-					style={{
-						width: "100%",
-						padding: 12,
-						borderRadius: 6,
-						background: "#333",
-						color: "#fff",
-						border: "1px solid #444",
-						fontSize: 16,
-						cursor: "pointer",
-					}}
-				>
-					<option value="" disabled>
-						-- Select a Source Input Channel --
-					</option>
-					{data?.availableInputs?.map(
-						(input: { index: number; name: string }) => (
-							<option key={input.index} value={input.index}>
-								{input.name} (Ch {input.index})
-							</option>
-						),
-					)}
-				</select>
-			</div>
+          {/* 4. MASTER COMPACT VOLUME CONTROLLER */}
+          <div className="bg-base-200 p-4 rounded-2xl border border-neutral/10 space-y-3 shadow-inner">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold text-neutral-content uppercase tracking-wider">Volume level</span>
+              <span className="text-3xl font-black text-primary font-mono tracking-tighter">
+                {Number(data?.audio.volume) > 100 ? Number(data?.audio.volume) / 10 : data?.audio.volume} <span className="text-sm font-normal text-neutral-content">dB</span>
+              </span>
+            </div>
 
-			{/* Dynamic Selector for Changing Sound Modes */}
-			<div style={{ marginBottom: 25 }}>
-				<span
-					style={{
-						display: "block",
-						marginBottom: 8,
-						fontSize: 14,
-						color: "#aaa",
-					}}
-				>
-					🎛️ DSP Sound Profile Mode
-				</span>
-				<select
-					value={data?.sound.currentIndex}
-					onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-						sendCommand("setSoundMode", e.target.value)
-					}
-					style={{
-						width: "100%",
-						padding: 12,
-						borderRadius: 6,
-						background: "#333",
-						color: "#fff",
-						border: "1px solid #444",
-						fontSize: 16,
-						cursor: "pointer",
-					}}
-				>
-					{data?.sound.availableModes.map((mode) => (
-						<option key={mode.index} value={mode.index}>
-							{mode.name}
-						</option>
-					))}
-				</select>
-			</div>
+            {/* Range Slider Knob */}
+            <input
+              type="range"
+              min="0"
+              max="80"
+              defaultValue={Number(data?.audio.volume) > 100 ? Math.floor(Number(data?.audio.volume) / 10) : Number(data?.audio.volume || 0)}
+              key={Number(data?.audio.volume)}
+              onMouseUp={(e: React.MouseEvent<HTMLInputElement>) => sendCommand('setVolume', (e.target as HTMLInputElement).value)}
+              onTouchEnd={(e: React.TouchEvent<HTMLInputElement>) => sendCommand('setVolume', (e.target as HTMLInputElement).value)}
+              className="range range-primary range-sm"
+            />
 
-			{/* Update your Metadata Readout Section Card to view the text-label state */}
-			<div
-				style={{
-					background: "#1a1a1a",
-					padding: 15,
-					borderRadius: 8,
-					fontSize: 15,
-				}}
-			>
-				<p style={{ margin: "0 0 10px 0" }}>
-					🔊 <strong>Active Volume Level:</strong> {data?.audio.volume} dB
-				</p>
-				<p style={{ margin: "0 0 10px 0" }}>
-					🎯 <strong>Active Audio Stream:</strong> {data?.currentSource.name}
-				</p>
-				<p style={{ margin: 0 }}>
-					🎚️ <strong>Active Sound Processing Mode:</strong>{" "}
-					{data?.sound.currentMode}
-				</p>
-			</div>
+            {/* Direct Micro Step Buttons */}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+                            <button
+                              type="button"
+                onClick={() => {
+                  const currentVol = Number(data?.audio.volume) > 100 ? Math.floor(Number(data?.audio.volume) / 10) : Number(data?.audio.volume);
+                  sendCommand('setVolume', currentVol - 1);
+                }}
+                className="btn btn-neutral btn-sm font-bold text-xs"
+              >
+                VOL DOWN
+              </button>
 
-			{/* Active Room Metadata Readouts */}
-			<div
-				style={{
-					background: "#1a1a1a",
-					padding: 15,
-					borderRadius: 8,
-					fontSize: 15,
-				}}
-			>
-				<p style={{ margin: "0 0 10px 0" }}>
-					🔊 <strong>Active Volume Level:</strong> {data?.audio?.volume ?? "--"}{" "}
-					dB
-				</p>
-				<p style={{ margin: 0 }}>
-					🎯 <strong>Active Audio Stream Destination:</strong>{" "}
-					{data?.currentSource?.name || "Unknown Channel"}
-				</p>
-			</div>
-		</div>
-	);
+                            <button
+                                  type="button"
+                onClick={() => {
+                  const currentVol = Number(data?.audio.volume) > 100 ? Math.floor(Number(data?.audio.volume) / 10) : Number(data?.audio.volume);
+                  sendCommand('setVolume', currentVol + 1);
+                }}
+                className="btn btn-neutral btn-sm font-bold text-xs"
+              >
+                VOL UP
+              </button>
+            </div>
+          </div>
+
+          {/* 5. LIVESTREAM HUD STATE STATISTICS FEED */}
+          <div className="stats stats-vertical bg-neutral text-neutral-content shadow-md rounded-xl text-sm overflow-hidden">
+            <div className="stat py-3 px-4 flex justify-between items-center">
+              <div className="stat-title text-xs text-neutral-content/60 font-bold uppercase">Stream Input</div>
+              <div className="stat-value text-sm text-white font-bold">{data?.currentSource.name}</div>
+            </div>
+            <div className="stat py-3 px-4 flex justify-between items-center border-t border-neutral-content/10">
+              <div className="stat-title text-xs text-neutral-content/60 font-bold uppercase">DSP Matrix</div>
+              <div className="stat-value text-sm text-secondary font-bold">{data?.sound.currentMode}</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const rootElement = document.getElementById("root");

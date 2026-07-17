@@ -11,11 +11,12 @@
 		"typescript": "^5"
 	},
 	"scripts": {
-	  "dev": "bunx @tailwindcss/cli --input ./src/input.css --output ./dist/output.css --watch & bun server.tsx"
+		"dev": "bun run tailwindcss -i ./src/input.css -o ./dist/output.css --watch & bun server.tsx"
 	},
 	"private": true,
 	"type": "module",
 	"dependencies": {
+		"@tailwindcss/cli": "^4.3.3",
 		"bun-plugin-tailwind": "^0.1.2",
 		"daisyui": "^5.6.18",
 		"fast-xml-parser": "^5.10.0",
