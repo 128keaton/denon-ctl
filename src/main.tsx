@@ -220,6 +220,26 @@ function App() {
 						</div>
 					</div>
 
+					<div className="grid grid-cols-2 gap-3">
+						<button
+              type="button"
+							onClick={() => sendCommand("wakeTheater")} // Calls our multi-device wake macro
+							disabled={!data || data?.isPoweredOn}
+							className="btn btn-success btn-md font-black shadow-sm"
+						>
+							WAKE THEATER
+						</button>
+
+						<button
+							type="button"
+							onClick={() => sendCommand("turnOff")}
+							disabled={!data?.isPoweredOn}
+							className="btn btn-error btn-md font-black shadow-sm"
+						>
+							STANDBY
+						</button>
+					</div>
+
 					{/* 5. LIVESTREAM HUD STATE STATISTICS FEED */}
 					<div className="stats stats-vertical bg-neutral text-neutral-content shadow-md rounded-xl text-sm overflow-hidden">
 						<div className="stat min-h-11.25 py-3 px-4 flex justify-between items-center">

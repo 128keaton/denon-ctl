@@ -86,10 +86,11 @@ Bun.serve({
 			};
 			if (action === "turnOn") await avr.turnOn();
 			if (action === "turnOff") await avr.turnOff();
-			if (action === "setSource") await avr.setSource(value); // Handles input routing channel updates
+			if (action === "setSource") await avr.setSource(value);
 			if (action === "setSoundMode") await avr.setSoundMode(value);
 			if (action === "setVolume") await avr.setVolume(value);
 			if (action === "setMute") await avr.setMute(Boolean(value));
+			if (action === "wakeTheater") await avr.wakeTheaterSystem();
 			return Response.json({ success: true });
 		}
 

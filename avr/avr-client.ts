@@ -20,6 +20,23 @@ export const avr = {
 	},
 
 	/**
+	 * Wakes up the entire home theater pipeline.
+	 * Turns on the receiver, waits for the hardware to boot, and forces
+	 * a source switch to kick off HDMI-CEC to wake the Apple TV and TV screen.
+	 */
+	async wakeTheaterSystem() {
+		// 1. Send the initial power-on request to the AVR
+		await this.turnOn();
+
+		// 2. Wait 2 seconds (Microcontrollers need a brief moment to cycle main power relays)
+		await new Promise((resolve) => setTimeout(resolve, 2000));
+
+		// 3. Switch to your Apple TV's channel index.
+		// Replace '7' with your Apple TV's actual channel number from your source list!
+		return this.setSource(7);
+	},
+
+	/**
 	 * Powers on the Main Zone of the amplifier.
 	 */
 	async turnOn() {
