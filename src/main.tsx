@@ -81,7 +81,7 @@ function App() {
           {/* 2. DYNAMIC INPUT SELECTOR ROUTER */}
           <div className="form-control w-full">
             <label htmlFor="source" className="label py-1">
-              <span className="label-text font-bold text-neutral-content text-xs tracking-wider uppercase">Active Input Channel</span>
+              <span className="label-text font-bold text-neutral-content text-xs tracking-wider uppercase">Input</span>
             </label>
                         <select
                             id="source"
