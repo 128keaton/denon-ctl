@@ -1,5 +1,5 @@
-import { XMLParser } from "fast-xml-parser";
 import * as fs from "node:fs";
+import { XMLParser } from "fast-xml-parser";
 
 const AVR_ADDRESS = "10.0.1.202";
 const AVR_PORT = "11080";

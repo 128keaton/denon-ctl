@@ -1,7 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import {
-	CONFIG_REGISTRY,
 	type AVRModule,
+	CONFIG_REGISTRY,
 	type ConfigType,
 	type ParsedResponse,
 } from "./avr-registry";
@@ -114,4 +114,4 @@ const getConfig = async <M extends AVRModule, T extends ConfigType<M>>(
 	return result as ParsedResponse<M, T>;
 };
 
-export { getConfig, setConfig, getSoundModesConfig };
+export { getConfig, getSoundModesConfig, setConfig };

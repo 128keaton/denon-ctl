@@ -1,4 +1,4 @@
-import { getConfig, setConfig, getSoundModesConfig } from "./avr-transport.ts"; // Point to your actual client file path
+import { getConfig, getSoundModesConfig, setConfig } from "./avr-transport.ts"; // Point to your actual client file path
 
 /**
  * AVR Control Client Wrappers
@@ -82,7 +82,9 @@ export const avr = {
 			// Check if this property value corresponds to an available hardware input channel
 			if (
 				!Number.isNaN(numericValue) &&
-				sourceMap.inputs.some((input: {index: number}) => input.index === numericValue)
+				sourceMap.inputs.some(
+					(input: { index: number }) => input.index === numericValue,
+				)
 			) {
 				activeIndexStr = cleanVal;
 				break;
@@ -93,7 +95,7 @@ export const avr = {
 
 		// Map the recovered integer token to its clean text profile string
 		const matchingSource = sourceMap.inputs.find(
-			(input: {index: number}) => input.index === activeIndex,
+			(input: { index: number }) => input.index === activeIndex,
 		);
 
 		return {

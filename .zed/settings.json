@@ -7,5 +7,14 @@
 		"CSS": {
 			"language_servers": ["tailwindcss-language-server"]
 		}
-	}
+	},
+ "formatter": {
+    "language_server": {
+      "name": "biome"
+    }
+  },
+  "code_actions_on_format": {
+    "source.fixAll.biome": true,
+    "source.organizeImports.biome": true
+  }
 }
