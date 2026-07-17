@@ -11,7 +11,9 @@
 		"typescript": "^5"
 	},
 	"scripts": {
-		"dev": "bun run tailwindcss -i ./src/input.css -o ./dist/output.css --watch & bun server.tsx"
+		"dev:css": "bun run tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+		"dev:serve": "bun server.tsx",
+		"dev": "bun run dev:css & bun run dev:serve"
 	},
 	"private": true,
 	"type": "module",
