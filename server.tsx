@@ -1,4 +1,4 @@
-import { avr } from "./avr-client";
+import { avr } from "./avr/avr-client";
 
 const PORT = 3000;
 
@@ -89,6 +89,7 @@ Bun.serve({
 			if (action === "setSource") await avr.setSource(value); // Handles input routing channel updates
 			if (action === "setSoundMode") await avr.setSoundMode(value);
 			if (action === "setVolume") await avr.setVolume(value);
+			if (action === "setMute") await avr.setMute(Boolean(value));
 			return Response.json({ success: true });
 		}
 

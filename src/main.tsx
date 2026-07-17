@@ -19,7 +19,10 @@ function App() {
 		}
 	}, []); // Empty array means this function reference never changes
 
-	const sendCommand = async (action: string, value?: string | number) => {
+	const sendCommand = async (
+		action: string,
+		value?: string | number | boolean,
+	) => {
 		await fetch("/api/command", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -165,6 +168,23 @@ function App() {
 							}
 							className="range range-primary range-sm"
 						/>
+
+						{/* --- ADDED MUTE TOGGLE ROW --- */}
+						<div className="form-control  p-2 flex px-3 flex-row justify-between items-center w-full">
+							<span className="label-text text-xs font-bold text-neutral-content uppercase tracking-wider grow">
+								{data?.audio.isMuted ? "🔇 Audio Muted" : "Audio Active"}
+							</span>
+							<input
+								disabled={!data}
+								type="checkbox"
+								// Coerce various possible backend outputs safely into pure booleans
+								checked={data?.audio.isMuted !== true}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									sendCommand("setMute", !e.target.checked)
+								}
+								className="toggle toggle-error toggle-sm"
+							/>
+						</div>
 
 						{/* Direct Micro Step Buttons */}
 						<div className="grid grid-cols-2 gap-2 pt-1">

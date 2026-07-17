@@ -1,4 +1,4 @@
-import { getConfig, setConfig, getSoundModesConfig } from "./client.ts"; // Point to your actual client file path
+import { getConfig, setConfig, getSoundModesConfig } from "./avr-transport.ts"; // Point to your actual client file path
 
 /**
  * AVR Control Client Wrappers
@@ -82,7 +82,7 @@ export const avr = {
 			// Check if this property value corresponds to an available hardware input channel
 			if (
 				!Number.isNaN(numericValue) &&
-				sourceMap.inputs.some((input) => input.index === numericValue)
+				sourceMap.inputs.some((input: {index: number}) => input.index === numericValue)
 			) {
 				activeIndexStr = cleanVal;
 				break;
@@ -93,7 +93,7 @@ export const avr = {
 
 		// Map the recovered integer token to its clean text profile string
 		const matchingSource = sourceMap.inputs.find(
-			(input) => input.index === activeIndex,
+			(input: {index: number}) => input.index === activeIndex,
 		);
 
 		return {
@@ -172,6 +172,22 @@ export const avr = {
 		const xml = `<MainZone><Volume>${avrVolumeValue}</Volume></MainZone>`;
 
 		// Target 'globals' type 12 based on your verified request log trace
+		return setConfig("globals", 12, xml);
+	},
+	/**
+	 * Toggles the audio muting state of the Main Zone.
+	 * @param shouldMute boolean flag indicating destination layout state
+	 */
+	async setMute(shouldMute: boolean) {
+		// Try passing "on" / "off". If your AVR rejects this, toggle Option B below
+		const stateToken = shouldMute ? "on" : "off";
+
+		// Option B Fallback (Uncomment if needed):
+		// const stateToken = shouldMute ? "1" : "0";
+
+		const xml = `<MainZone><Mute>${stateToken}</Mute></MainZone>`;
+
+		// Dispatches to globals type 12 matching your verified volume endpoint layout
 		return setConfig("globals", 12, xml);
 	},
 
