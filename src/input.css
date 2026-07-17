@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "daisyui";
+
+/* Tailwind v4 uses standard CSS variables for target parsing context rules */
+@source "../index.html";
+@source "./**/*.{ts,tsx}";
+
+/* DaisyUI v5 defaults to setting its theme via CSS config attributes */
+@theme {
+  --color-primary: #10b981;
+}

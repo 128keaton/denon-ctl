@@ -27,12 +27,13 @@ export interface AVRStatusResponse {
 }
 
 async function buildFrontend() {
-	const result = await Bun.build({
-		entrypoints: ["./src/main.tsx"],
-		outdir: "./dist",
-	});
-	if (!result.success) console.error("Compilation error:", result.logs);
+  const result = await Bun.build({
+    entrypoints: ['./src/main.tsx'],
+    outdir: './dist',
+  });
+  if (!result.success) console.error("Bun bundle failed:", result.logs);
 }
+
 
 Bun.serve({
 	port: PORT,
@@ -93,7 +94,8 @@ Bun.serve({
 		}
 
 		// --- STATIC SERVING ---
-		if (url.pathname === "/") return new Response(Bun.file("./index.html"));
+        if (url.pathname === "/") return new Response(Bun.file("./index.html"));
+				if (url.pathname === "/main.css") return new Response(Bun.file("./dist/main.css"));
 		if (url.pathname === "/src/main.tsx")
 			return new Response(Bun.file("./dist/main.js"));
 

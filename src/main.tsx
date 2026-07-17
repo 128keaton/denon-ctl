@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { createRoot } from "react-dom/client";
 import type { AVRStatusResponse } from "../server";
 
+
 function App() {
 	const [data, setData] = useState<AVRStatusResponse | null>(null);
 
@@ -35,15 +36,8 @@ function App() {
 	}, [fetchStatus]);
 
 	return (
-		<div
-			style={{
-				padding: 30,
-				maxWidth: 440,
-				margin: "40px auto",
-				background: "#222",
-				borderRadius: 12,
-				boxShadow: "0 4px 15px rgba(0,0,0,0.5)",
-			}}
+		<div className="w-full h-full"
+
 		>
 			<div
 				style={{
